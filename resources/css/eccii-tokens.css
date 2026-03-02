@@ -1,0 +1,274 @@
+/*
+ * ┌─────────────────────────────────────────────────────────────────────────┐
+ * │  ECCII Design Tokens                                                    │
+ * │  resources/css/eccii-tokens.css                                         │
+ * │                                                                         │
+ * │  Single source of truth for every visual decision in the system.        │
+ * │  Imported by app.css BEFORE the Tailwind directives so that CSS         │
+ * │  variables are available inside Tailwind utility classes too.           │
+ * │                                                                         │
+ * │  Contents:                                                              │
+ * │    01 Google Fonts import                                               │
+ * │    02 Colour tokens                                                     │
+ * │    03 Typography tokens                                                 │
+ * │    04 Spacing / sizing tokens                                           │
+ * │    05 Shadow tokens                                                     │
+ * │    06 Border-radius tokens                                              │
+ * │    07 Transition tokens                                                 │
+ * │    08 Z-index tokens                                                    │
+ * │    09 Sidebar tokens                                                    │
+ * │    10 Component-level tokens                                            │
+ * └─────────────────────────────────────────────────────────────────────────┘
+ */
+
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   01 · GOOGLE FONTS
+   Cormorant Garamond  — display / headings (sacred, refined)
+   Outfit              — body copy   (readable, warm, modern)
+   JetBrains Mono      — labels / code / eyebrows
+═══════════════════════════════════════════════════════════════════════════ */
+
+@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400;1,600&family=Outfit:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap');
+
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   02 · COLOUR TOKENS
+═══════════════════════════════════════════════════════════════════════════ */
+
+:root {
+
+  /* ── Ink (near-black) ─────────────────────────────────────────────────── */
+  --ink:          #0D0D0D;
+  --ink-80:       rgba(13, 13, 13, 0.80);
+  --ink-50:       rgba(13, 13, 13, 0.50);
+  --ink-20:       rgba(13, 13, 13, 0.12);
+
+  /* ── Cream (background tones) ─────────────────────────────────────────── */
+  --cream:        #FAF7F2;   /* page background */
+  --cream-2:      #F2EDE4;   /* subtle fill, table headers */
+  --cream-3:      #E8E1D6;   /* dividers, heavier fills */
+
+  /* ── White ────────────────────────────────────────────────────────────── */
+  --white:        #FFFFFF;
+
+  /* ── Gold (primary brand / CTA) ──────────────────────────────────────── */
+  --gold:         #B8923A;
+  --gold-lt:      #D4AE60;   /* lighter tone for text on dark backgrounds */
+  --gold-pale:    #FDF6E8;   /* background fill for gold chips */
+  --gold-rgb:     184, 146, 58;  /* raw RGB for rgba() usage */
+
+  /* ── Sage (success / completed / progress) ────────────────────────────── */
+  --sage:         #3E6B52;
+  --sage-lt:      #6A9E7F;
+  --sage-pale:    #EAF3EC;
+  --sage-rgb:     62, 107, 82;
+
+  /* ── Sky (info / links / child profiles) ─────────────────────────────── */
+  --sky:          #2B5F82;
+  --sky-lt:       #5D90B3;
+  --sky-pale:     #E6F1F8;
+  --sky-rgb:      43, 95, 130;
+
+  /* ── Rose (danger / delete / error) ──────────────────────────────────── */
+  --rose:         #B84848;
+  --rose-pale:    #FAEAEA;
+  --rose-rgb:     184, 72, 72;
+
+  /* ── Amber (warning / pending / in-progress) ─────────────────────────── */
+  --amber:        #C06A1A;
+  --amber-pale:   #FEF3E2;
+  --amber-rgb:    192, 106, 26;
+
+  /* ── Borders ──────────────────────────────────────────────────────────── */
+  --border:       #DDD7CC;
+  --border-lt:    #EDE8E1;   /* lighter; used inside cards */
+
+}
+
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   03 · TYPOGRAPHY TOKENS
+═══════════════════════════════════════════════════════════════════════════ */
+
+:root {
+  /* Font families */
+  --font-display:  'Cormorant Garamond', Georgia, serif;
+  --font-body:     'Outfit', system-ui, sans-serif;
+  --font-mono:     'JetBrains Mono', 'Fira Code', monospace;
+
+  /* Font sizes — static scale */
+  --text-display: 52px;    /* hero numbers, splash titles */
+  --text-h1:      36px;    /* page title */
+  --text-h2:      26px;    /* section heading */
+  --text-h3:      18px;    /* card title (Outfit 600) */
+  --text-body:    14px;    /* base body */
+  --text-sm:      12px;    /* captions, meta */
+  --text-xs:      11px;    /* small labels */
+  --text-xxs:      9px;    /* eyebrow mono labels */
+
+  /* Line heights */
+  --leading-tight: 1.1;
+  --leading-snug:  1.35;
+  --leading-base:  1.65;
+  --leading-loose: 1.75;
+
+  /* Tracking */
+  --tracking-eyebrow: 0.22em;
+  --tracking-label:   0.12em;
+  --tracking-wide:    0.06em;
+}
+
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   04 · SPACING TOKENS
+═══════════════════════════════════════════════════════════════════════════ */
+
+:root {
+  --space-1:   4px;
+  --space-2:   8px;
+  --space-3:  12px;
+  --space-4:  16px;
+  --space-5:  20px;
+  --space-6:  24px;
+  --space-8:  32px;
+  --space-10: 40px;
+  --space-12: 48px;
+  --space-16: 64px;
+}
+
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   05 · SHADOW TOKENS
+═══════════════════════════════════════════════════════════════════════════ */
+
+:root {
+  --shadow-xs: 0 1px 2px rgba(0, 0, 0, 0.04);
+  --shadow-sm: 0 1px 4px rgba(0, 0, 0, 0.06);
+  --shadow-md: 0 4px 20px rgba(0, 0, 0, 0.08);
+  --shadow-lg: 0 12px 40px rgba(0, 0, 0, 0.12);
+  --shadow-xl: 0 24px 60px rgba(0, 0, 0, 0.16);
+
+  /* Gold glow — used on focused inputs and active cards */
+  --shadow-gold: 0 0 0 3px rgba(var(--gold-rgb), 0.18);
+}
+
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   06 · BORDER-RADIUS TOKENS
+═══════════════════════════════════════════════════════════════════════════ */
+
+:root {
+  --radius-xs:  4px;
+  --radius-sm:  8px;
+  --radius-md: 14px;
+  --radius-lg: 20px;
+  --radius-xl: 28px;
+  --radius-full: 9999px;  /* pill / chip */
+}
+
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   07 · TRANSITION TOKENS
+═══════════════════════════════════════════════════════════════════════════ */
+
+:root {
+  --transition-fast:   all 0.12s ease;
+  --transition-base:   all 0.18s ease;
+  --transition-slow:   all 0.30s ease;
+  --transition-layout: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   08 · Z-INDEX TOKENS
+═══════════════════════════════════════════════════════════════════════════ */
+
+:root {
+  --z-below:    -1;
+  --z-base:      0;
+  --z-raised:   10;    /* sticky section headers */
+  --z-sidebar:  20;    /* sidebar on mobile */
+  --z-topbar:   30;    /* top navigation bar */
+  --z-dropdown: 40;    /* dropdown menus */
+  --z-modal:    50;    /* modal overlays */
+  --z-toast:    60;    /* flash messages */
+  --z-tooltip:  70;    /* hover tooltips */
+}
+
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   09 · SIDEBAR TOKENS
+═══════════════════════════════════════════════════════════════════════════ */
+
+:root {
+  --sidebar-width:         230px;
+  --sidebar-collapsed:      60px;  /* icon-only width when collapsed */
+  --sidebar-bg:            var(--ink);
+  --sidebar-border:        rgba(255, 255, 255, 0.06);
+  --sidebar-item-fg:       rgba(250, 247, 242, 0.55);
+  --sidebar-item-fg-hover: rgba(250, 247, 242, 0.90);
+  --sidebar-item-active-bg:rgba(var(--gold-rgb), 0.12);
+  --sidebar-item-active-fg:var(--gold-lt);
+  --topbar-height:          60px;
+}
+
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   10 · COMPONENT-LEVEL TOKENS
+   Specific composite values referenced in component inline styles and
+   Tailwind @apply rules.
+═══════════════════════════════════════════════════════════════════════════ */
+
+:root {
+  /* Inputs */
+  --input-border:        var(--border);
+  --input-border-focus:  var(--gold);
+  --input-border-error:  var(--rose);
+  --input-bg:            var(--white);
+  --input-padding:       10px 14px;
+  --input-radius:        var(--radius-sm);
+
+  /* Buttons */
+  --btn-height:          38px;
+  --btn-radius:          var(--radius-sm);
+  --btn-font:            var(--font-body);
+
+  /* Cards */
+  --card-bg:             var(--white);
+  --card-border:         var(--border);
+  --card-radius:         var(--radius-md);
+  --card-shadow:         var(--shadow-sm);
+  --card-shadow-hover:   var(--shadow-md);
+
+  /* Tables */
+  --table-header-bg:     var(--cream-2);
+  --table-row-hover-bg:  var(--cream);
+  --table-border:        var(--border-lt);
+
+  /* Modals */
+  --modal-overlay-bg:    rgba(13, 13, 13, 0.55);
+  --modal-backdrop:      blur(4px);
+  --modal-radius:        var(--radius-lg);
+  --modal-shadow:        var(--shadow-xl);
+
+  /* Badge chips (semantic) */
+  --badge-completed-bg:  var(--sage-pale);
+  --badge-completed-fg:  var(--sage);
+  --badge-sky-bg:        var(--sky-pale);
+  --badge-sky-fg:        var(--sky);
+  --badge-pending-bg:    var(--amber-pale);
+  --badge-pending-fg:    var(--amber);
+  --badge-danger-bg:     var(--rose-pale);
+  --badge-danger-fg:     var(--rose);
+  --badge-admin-bg:      var(--ink);
+  --badge-admin-fg:      var(--cream);
+  --badge-gold-bg:       var(--gold-pale);
+  --badge-gold-fg:       var(--amber);
+
+  /* Progress bar */
+  --progress-track:      var(--cream-2);
+  --progress-sage:       linear-gradient(90deg, var(--sage), var(--sage-lt));
+  --progress-gold:       linear-gradient(90deg, var(--gold), var(--gold-lt));
+  --progress-sky:        linear-gradient(90deg, var(--sky), var(--sky-lt));
+}
