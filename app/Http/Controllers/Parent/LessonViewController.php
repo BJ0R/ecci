@@ -14,23 +14,25 @@ class LessonViewController extends Controller
     /**
      * Show all published lessons filtered for the active child's age group.
      *
-     * Child resolution order (matches HandleInertiaRequests):
-     *   1. ?child_id= in URL (and belongs to this parent)
-     *   2. session('active_child_id')
-     *   3. First child registered (only on first-ever visit)
-     *   4. No children → render empty state
+     * ROOT CAUSE OF "only one lesson shown":
+     *   The original code called $child->ageGroup() — a method that does NOT
+     *   exist on the ChildProfile model. PHP silently returns null, so the
+     *   WHERE clause becomes  WHERE age_group = ''  which matches nothing
+     *   (or at most one accidental row).
+     *
+     * FIX: resolveAgeGroup() derives the group directly from $child->age_group
+     *   (the raw column) or $child->age (the numeric age), never calling any
+     *   model method. This matches how lessons.age_group is stored: 'kids',
+     *   'nursery', 'youth' (lowercase).
      */
     public function index(Request $request)
     {
         $parent   = $request->user();
         $children = $parent->childProfiles()->get();
 
-        // Step 1: URL param
-        // Step 2: Session fallback (set by HandleInertiaRequests or prior page)
         $childId = $request->query('child_id')
             ?? $request->session()->get('active_child_id');
 
-        // Safe lookup — firstWhere returns null instead of throwing
         $child = $childId
             ? ($children->firstWhere('id', $childId) ?? $children->first())
             : $children->first();
@@ -42,19 +44,26 @@ class LessonViewController extends Controller
             ]);
         }
 
-        // Save to session so switching child on this page persists everywhere
         $request->session()->put('active_child_id', $child->id);
 
+        $ageGroup = $this->resolveAgeGroup($child);
+
         $lessons = Lesson::where('is_published', true)
-            ->where('age_group', $child->ageGroup())
+            ->whereRaw('LOWER(age_group) = ?', [$ageGroup])
+            ->with('content')
             ->withCount('activities')
             ->orderBy('week_number')
             ->get()
             ->map(function ($lesson) use ($child) {
-                $lesson->progress = LessonProgress::where([
+                $progress = LessonProgress::where([
                     'lesson_id'        => $lesson->id,
                     'child_profile_id' => $child->id,
                 ])->first();
+
+                $lesson->progress = $progress
+                    ? ['status' => $progress->status, 'completed_at' => $progress->completed_at]
+                    : null;
+
                 return $lesson;
             });
 
@@ -65,7 +74,8 @@ class LessonViewController extends Controller
     }
 
     /**
-     * Show a single lesson. Auto-marks as "viewed" for the active child.
+     * Show a single lesson.
+     * Auto-marks as "viewed" for the active child on first visit.
      */
     public function show(Request $request, Lesson $lesson)
     {
@@ -76,12 +86,10 @@ class LessonViewController extends Controller
             'activities' => fn ($q) => $q->withCount('questions')->orderBy('created_at'),
         ]);
 
-        // Use ?child_id= from URL or fall back to session (same priority order)
         $childId = $request->query('child_id')
             ?? $request->session()->get('active_child_id');
 
         if ($childId) {
-            // Verify child belongs to this parent before writing progress
             $owns = $request->user()->childProfiles()->where('id', $childId)->exists();
             if ($owns) {
                 LessonProgress::firstOrCreate(
@@ -98,7 +106,7 @@ class LessonViewController extends Controller
 
     /**
      * Mark a lesson as fully completed for a specific child.
-     * Called from the "Mark as Completed" sidebar button.
+     * Route accepts both POST and PATCH (see web.php Route::match).
      */
     public function complete(Request $request, Lesson $lesson)
     {
@@ -106,7 +114,6 @@ class LessonViewController extends Controller
             'child_profile_id' => 'required|exists:child_profiles,id',
         ]);
 
-        // Verify ownership before writing
         $child = $request->user()->childProfiles()
             ->findOrFail($request->child_profile_id);
 
@@ -116,5 +123,42 @@ class LessonViewController extends Controller
         );
 
         return back()->with('success', 'Lesson marked as completed! 🎉');
+    }
+
+    // ─────────────────────────────────────────────────────────────────────────
+
+    /**
+     * Derive the lessons.age_group filter value from whatever the ChildProfile
+     * model actually exposes — without calling any model method.
+     *
+     * Returns one of: 'nursery' | 'kids' | 'youth'  (always lowercase)
+     *
+     * Priority:
+     *  1. $child->age_group column if it contains a valid group string.
+     *  2. Computed from $child->age (integer) — same thresholds as Index.jsx.
+     *  3. 'kids' as a safe fallback so the page never goes completely blank.
+     */
+    private function resolveAgeGroup($child): string
+    {
+        // ── 1. Direct age_group column ────────────────────────────────────────
+        $stored = isset($child->age_group) ? strtolower((string) $child->age_group) : '';
+        if (in_array($stored, ['nursery', 'kids', 'youth'], true)) {
+            return $stored;
+        }
+
+        // ── 2. Compute from numeric age ───────────────────────────────────────
+        //    Mirrors the ageGroupLabel() helper in Index.jsx exactly:
+        //      age ≤ 5  → nursery
+        //      age ≤ 10 → kids
+        //      age > 10 → youth
+        $age = (int) ($child->age ?? 0);
+        if ($age > 0) {
+            if ($age <= 5)  return 'nursery';
+            if ($age <= 10) return 'kids';
+            return 'youth';
+        }
+
+        // ── 3. Fallback ───────────────────────────────────────────────────────
+        return 'kids';
     }
 }

@@ -101,10 +101,18 @@ Route::middleware(['auth', 'is.parent'])
             ->except(['show', 'edit'])
             ->names('children');
 
-        // Lessons
-        Route::get  ('lessons',                   [\App\Http\Controllers\Parent\LessonViewController::class, 'index'])   ->name('lessons.index');
-        Route::get  ('lessons/{lesson}',          [\App\Http\Controllers\Parent\LessonViewController::class, 'show'])    ->name('lessons.show');
-        Route::patch('lessons/{lesson}/complete', [\App\Http\Controllers\Parent\LessonViewController::class, 'complete'])->name('lessons.complete');
+        // ── Lessons ────────────────────────────────────────────────────────────
+        Route::get('lessons',          [\App\Http\Controllers\Parent\LessonViewController::class, 'index'])   ->name('lessons.index');
+        Route::get('lessons/{lesson}', [\App\Http\Controllers\Parent\LessonViewController::class, 'show'])    ->name('lessons.show');
+
+        // FIX: was Route::patch — the Lesson Show page calls router.post(), not router.patch().
+        // Route::match(['post','patch'], ...) accepts both so it works regardless of which
+        // HTTP verb the frontend uses. The controller action doesn't care about the verb.
+        Route::match(
+            ['post', 'patch'],
+            'lessons/{lesson}/complete',
+            [\App\Http\Controllers\Parent\LessonViewController::class, 'complete']
+        )->name('lessons.complete');
 
         // Activities
         Route::get ('activities/{activity}',         [\App\Http\Controllers\Parent\ActivityViewController::class, 'show'])  ->name('activities.show');

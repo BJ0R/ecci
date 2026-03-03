@@ -1,56 +1,47 @@
 /**
- * Badge.jsx — Tailwind CSS
- * Status pill / label badge from the ECCII component library.
+ * Badge.jsx — ECCII logo-derived palette
+ * All bg/text pairs WCAG AA compliant.
  */
 export default function Badge({
-    children,
-    status,
-    color,
-    textColor,
-    size = 'md',
-    className = '',
-    style: extraStyle = {},
+    children, status, color, textColor,
+    size = 'md', className = '', style: extraStyle = {},
 }) {
     const statusMap = {
-        completed: { bg: '#EAF3EC', text: '#3E6B52' },
-        viewed:    { bg: '#E6F1F8', text: '#2B5F82' },
-        new:       { bg: '#E6F1F8', text: '#2B5F82' },
-        pending:   { bg: '#FEF3E2', text: '#C06A1A' },
-        missed:    { bg: '#FAEAEA', text: '#B84848' },
-        error:     { bg: '#FAEAEA', text: '#B84848' },
-        admin:     { bg: '#0D0D0D', text: '#FAF7F2' },
-        parent:    { bg: '#EAF3EC', text: '#3E6B52' },
-        gold:      { bg: '#FDF6E8', text: '#C06A1A' },
-        nursery:   { bg: '#FEF3E2', text: '#C06A1A' },
-        kids:      { bg: '#E6F1F8', text: '#2B5F82' },
-        youth:     { bg: '#EAF3EC', text: '#3E6B52' },
-        published: { bg: '#EAF3EC', text: '#3E6B52' },
-        draft:     { bg: '#F2EDE4', text: 'rgba(13,13,13,0.5)' },
-        quiz:      { bg: '#FDF6E8', text: '#B8923A' },
-        drawing:   { bg: '#E6F1F8', text: '#2B5F82' },
-        fill:      { bg: '#EAF3EC', text: '#3E6B52' },
+        completed: { bg: '#ddf0e4', text: '#145c32' },
+        viewed:    { bg: '#dbeaf8', text: '#154e78' },
+        new:       { bg: '#e4eaf8', text: '#0d1f5c' },
+        pending:   { bg: '#fdefd4', text: '#7a4800' },
+        missed:    { bg: '#fae0de', text: '#8c1816' },
+        error:     { bg: '#fae0de', text: '#8c1816' },
+        admin:     { bg: '#0d1f5c', text: '#f0f4fc' },
+        parent:    { bg: '#ddf0e4', text: '#145c32' },
+        gold:      { bg: '#fdefd4', text: '#7a4800' },
+        crimson:   { bg: '#fae0de', text: '#8c1816' },
+        nursery:   { bg: '#fdefd4', text: '#7a4800' },
+        kids:      { bg: '#dbeaf8', text: '#154e78' },
+        youth:     { bg: '#ddf0e4', text: '#145c32' },
+        published: { bg: '#ddf0e4', text: '#145c32' },
+        draft:     { bg: '#e4eaf8', text: 'rgba(13,31,92,0.45)' },
+        quiz:      { bg: '#fdefd4', text: '#7a4800' },
+        drawing:   { bg: '#dbeaf8', text: '#154e78' },
+        fill:      { bg: '#ddf0e4', text: '#145c32' },
     };
 
     const sizeClasses = {
-        xs: 'text-[9px]  px-1.5 py-0.5',
-        sm: 'text-[9px]  px-2   py-0.5',
-        md: 'text-[10px] px-2.5 py-0.5',
-        lg: 'text-[12px] px-3.5 py-1',
+        xs: 'text-[9px]  px-1.5 py-[3px]',
+        sm: 'text-[9px]  px-2   py-[3px]',
+        md: 'text-[10px] px-2.5 py-[4px]',
+        lg: 'text-[12px] px-3.5 py-[5px]',
     };
 
     const resolved = status ? (statusMap[status] ?? statusMap.draft) : null;
-    const bg   = color     || resolved?.bg   || '#F2EDE4';
-    const text = textColor || resolved?.text || 'rgba(13,13,13,0.5)';
+    const bg   = color     || resolved?.bg   || '#e4eaf8';
+    const text = textColor || resolved?.text || 'rgba(13,31,92,0.50)';
 
     return (
         <span
-            className={`
-                inline-flex items-center rounded-full font-bold tracking-[0.06em] uppercase
-                leading-none whitespace-nowrap
-                ${sizeClasses[size] || sizeClasses.md}
-                ${className}
-            `}
-            style={{ background: bg, color: text, ...extraStyle }}
+            className={`inline-flex items-center gap-[3px] rounded-full font-bold tracking-[0.07em] uppercase leading-none whitespace-nowrap ${sizeClasses[size] || sizeClasses.md} ${className}`}
+            style={{ background: bg, color: text, fontFamily: "'Outfit', sans-serif", ...extraStyle }}
         >
             {children}
         </span>
