@@ -1,5 +1,7 @@
 <?php
-namespace App\Http\Controllers\Admin;
+// app/Http/Controllers/Teacher/MemoryVerseController.php
+
+namespace App\Http\Controllers\Teacher;   // ← FIXED (was Admin)
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreMemoryVerseRequest;
@@ -11,9 +13,10 @@ class MemoryVerseController extends Controller
     public function index()
     {
         $verses = MemoryVerse::withCount('completions')
-            ->latest()->paginate(20);
+            ->latest()
+            ->paginate(20);
 
-        return Inertia::render('Admin/Verses/Index', ['verses' => $verses]);
+        return Inertia::render('Teacher/Verses/Index', ['verses' => $verses]); // ← FIXED path
     }
 
     public function store(StoreMemoryVerseRequest $request)

@@ -1,6 +1,7 @@
 <?php
+// app/Http/Controllers/Teacher/LessonController.php
 
-namespace App\Http\Controllers\Admin;
+namespace App\Http\Controllers\Teacher;   // ← FIXED (was Admin)
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreLessonRequest;
@@ -10,7 +11,6 @@ use Inertia\Inertia;
 
 class LessonController extends Controller
 {
-    /** List all lessons for admin management */
     public function index()
     {
         $lessons = Lesson::with('creator')
@@ -18,24 +18,14 @@ class LessonController extends Controller
             ->latest()
             ->paginate(15);
 
-        return Inertia::render('Admin/Lessons/Index', ['lessons' => $lessons]);
+        return Inertia::render('Teacher/Lessons/Index', ['lessons' => $lessons]); // ← FIXED path
     }
 
-    /** Show create form */
     public function create()
     {
-        return Inertia::render('Admin/Lessons/Create');
+        return Inertia::render('Teacher/Lessons/Create'); // ← FIXED path
     }
 
-    /**
-     * Store new lesson + its content.
-     *
-     * Fixes applied vs original:
-     *  1. series  coalesced to '' — column is NOT NULL with no default
-     *  2. prayer  coalesced to '' — column is NOT NULL with no default
-     *  3. reflection_questions filtered to remove blank entries the user
-     *     left empty before submitting (cleaner data in DB)
-     */
     public function store(StoreLessonRequest $request)
     {
         $lesson = Lesson::create([
@@ -52,7 +42,6 @@ class LessonController extends Controller
             'bible_reference'      => $request->bible_reference,
             'bible_text'           => $request->bible_text,
             'explanation'          => $request->explanation,
-            // Filter out blank strings left in the dynamic list
             'reflection_questions' => array_values(
                 array_filter($request->reflection_questions ?? [], fn ($q) => trim((string) $q) !== '')
             ),
@@ -60,16 +49,15 @@ class LessonController extends Controller
         ]);
 
         return redirect()
-            ->route('admin.lessons.index')
+            ->route('teacher.lessons.index')
             ->with('success', 'Lesson "' . $lesson->title . '" ' . ($lesson->is_published ? 'published' : 'saved as draft') . '.');
     }
 
-    /** Show edit form */
     public function edit(Lesson $lesson)
     {
         $lesson->load('content');
 
-        return Inertia::render('Admin/Lessons/Edit', [
+        return Inertia::render('Teacher/Lessons/Edit', [ // ← FIXED path
             'lesson' => [
                 'id'           => $lesson->id,
                 'title'        => $lesson->title,
@@ -83,7 +71,6 @@ class LessonController extends Controller
                     'bible_reference'      => $lesson->content->bible_reference,
                     'bible_text'           => $lesson->content->bible_text,
                     'explanation'          => $lesson->content->explanation,
-                    // Always send at least [''] so Edit.jsx has one empty row to start
                     'reflection_questions' => !empty($lesson->content->reflection_questions)
                         ? $lesson->content->reflection_questions
                         : [''],
@@ -93,12 +80,6 @@ class LessonController extends Controller
         ]);
     }
 
-    /**
-     * Update lesson + its content.
-     *
-     * Same null-coalescing fixes as store().
-     * published_at: only set the first time it goes live — preserve original date on re-saves.
-     */
     public function update(UpdateLessonRequest $request, Lesson $lesson)
     {
         $nowPublished = $request->boolean('is_published');
@@ -110,7 +91,7 @@ class LessonController extends Controller
             'age_group'    => $request->age_group,
             'is_published' => $nowPublished,
             'published_at' => $nowPublished
-                ? ($lesson->published_at ?? now())   // preserve original publish date
+                ? ($lesson->published_at ?? now())
                 : null,
         ]);
 
@@ -128,15 +109,13 @@ class LessonController extends Controller
         );
 
         return redirect()
-            ->route('admin.lessons.index')
+            ->route('teacher.lessons.index')
             ->with('success', 'Lesson updated.');
     }
 
-    /** Soft-delete (archive) lesson — progress records are preserved */
     public function destroy(Lesson $lesson)
     {
         $lesson->delete();
-
         return back()->with('success', 'Lesson archived.');
     }
 }

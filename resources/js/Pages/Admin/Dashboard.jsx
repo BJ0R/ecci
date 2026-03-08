@@ -1,35 +1,46 @@
+// resources/js/Pages/Admin/Dashboard.jsx
+// UPDATED: quick actions now admin-only (no lesson/verse/activity links)
+//          recentSubmissions panel links to teacher progress instead
+
 import { Head, Link, usePage } from '@inertiajs/react';
 import AdminLayout from '@/Components/Layout/AdminLayout';
 import Badge from '@/Components/UI/Badge';
 import {
     Users, Baby, BookOpen, ClipboardList,
-    HeartHandshake, TrendingUp, PlusCircle,
-    BookMarked, Megaphone, CheckCircle2, XCircle,
-    ChevronRight,
+    HeartHandshake, Megaphone, CheckCircle2, XCircle,
+    ChevronRight, GraduationCap,
 } from 'lucide-react';
 
-/**
- * Admin/Dashboard.jsx
- * All shared sub-components are exported from this file and reused
- * across every other admin page.
- */
 export default function AdminDashboard({ stats = {}, recentFamilies = [], recentSubmissions = [] }) {
     const { flash } = usePage().props;
 
     const statCards = [
-        { label: 'Total Families',    value: stats.total_families    ?? 0, icon: Users,          colorClass: 'text-amber-500',   badge: stats.pending_approvals ? `${stats.pending_approvals} pending` : null, badgeStatus: 'pending' },
-        { label: 'Total Children',    value: stats.total_children    ?? 0, icon: Baby,            colorClass: 'text-sky-500'    },
-        { label: 'Published Lessons', value: stats.total_lessons     ?? 0, icon: BookOpen,        colorClass: 'text-emerald-600' },
-        { label: 'Submissions Today', value: stats.submissions_today ?? 0, icon: ClipboardList,   colorClass: 'text-amber-600'  },
-        { label: 'Prayer Requests',   value: stats.prayer_requests   ?? 0, icon: HeartHandshake,  colorClass: 'text-rose-500',    badge: stats.prayer_requests > 0 ? 'Needs response' : null, badgeStatus: 'pending' },
+        {
+            label: 'Total Families',
+            value: stats.total_families    ?? 0,
+            icon: Users,
+            colorClass: 'text-amber-500',
+            badge: stats.pending_approvals ? `${stats.pending_approvals} pending` : null,
+            badgeStatus: 'pending',
+        },
+        { label: 'Total Children',    value: stats.total_children    ?? 0, icon: Baby,          colorClass: 'text-sky-500'    },
+        { label: 'Published Lessons', value: stats.total_lessons     ?? 0, icon: BookOpen,      colorClass: 'text-emerald-600' },
+        { label: 'Submissions Today', value: stats.submissions_today ?? 0, icon: ClipboardList, colorClass: 'text-amber-600'  },
+        {
+            label: 'Prayer Requests',
+            value: stats.prayer_requests   ?? 0,
+            icon: HeartHandshake,
+            colorClass: 'text-rose-500',
+            badge: stats.prayer_requests > 0 ? 'Needs response' : null,
+            badgeStatus: 'pending',
+        },
     ];
 
+    // Admin quick actions — content management belongs to Teacher
     const quickActions = [
-        { href: '/admin/lessons/create', label: 'New Lesson',     icon: BookOpen,       bgClass: 'bg-stone-900 text-amber-50'    },
-        { href: '/admin/verses',          label: 'Post Verse',      icon: BookMarked,     bgClass: 'bg-amber-500 text-stone-900'   },
-        { href: '/admin/announcements',   label: 'Announcement',    icon: Megaphone,      bgClass: 'bg-emerald-600 text-white'     },
-        { href: '/admin/users',           label: 'Manage Families', icon: Users,          bgClass: 'bg-sky-500 text-white'         },
-        { href: '/admin/prayer',          label: 'Prayer Requests', icon: HeartHandshake, bgClass: 'bg-rose-500 text-white'        },
+        { href: '/admin/announcements', label: 'Post Announcement', icon: Megaphone,     bgClass: 'bg-emerald-600 text-white'   },
+        { href: '/admin/users',         label: 'Manage Users',      icon: Users,         bgClass: 'bg-stone-900 text-amber-50'  },
+        { href: '/admin/prayer',        label: 'Prayer Requests',   icon: HeartHandshake, bgClass: 'bg-rose-500 text-white'     },
     ];
 
     return (
@@ -37,9 +48,9 @@ export default function AdminDashboard({ stats = {}, recentFamilies = [], recent
             <Head title="Dashboard — ECCII Admin" />
             <FlashMessage flash={flash} />
 
-            <PageEyebrow label="Overview" title="Church Dashboard" />
+            <PageEyebrow label="Overview" title="Admin Dashboard" />
 
-            {/* ── Stat cards ───────────────────────────────────────── */}
+            {/* Stat cards */}
             <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3 mb-7">
                 {statCards.map((s, i) => (
                     <div key={i} className="rounded-[14px] border border-stone-200 bg-white p-4 flex flex-col gap-1">
@@ -62,7 +73,7 @@ export default function AdminDashboard({ stats = {}, recentFamilies = [], recent
                 ))}
             </div>
 
-            {/* ── Quick actions ────────────────────────────────────── */}
+            {/* Quick actions */}
             <div className="flex flex-wrap gap-2.5 mb-7">
                 {quickActions.map((a, i) => (
                     <Link
@@ -77,7 +88,7 @@ export default function AdminDashboard({ stats = {}, recentFamilies = [], recent
                 ))}
             </div>
 
-            {/* ── Two-column panels ────────────────────────────────── */}
+            {/* Two-column panels */}
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-5 mb-7">
 
                 {/* Recent families */}
@@ -95,9 +106,7 @@ export default function AdminDashboard({ stats = {}, recentFamilies = [], recent
                                     {(f.family_name || f.name).charAt(0).toUpperCase()}
                                 </div>
                                 <div>
-                                    <div className="text-[13px] font-semibold text-stone-900">
-                                        {f.family_name || f.name}
-                                    </div>
+                                    <div className="text-[13px] font-semibold text-stone-900">{f.family_name || f.name}</div>
                                     <div className="text-[11px] text-stone-400">
                                         {f.child_profiles_count} {f.child_profiles_count === 1 ? 'child' : 'children'}
                                     </div>
@@ -110,11 +119,11 @@ export default function AdminDashboard({ stats = {}, recentFamilies = [], recent
                     ))}
                 </Panel>
 
-                {/* Recent submissions */}
+                {/* Recent activity submissions (read-only) */}
                 <Panel
                     title="Recent Submissions"
                     icon={<ClipboardList size={13} className="text-stone-400" />}
-                    action={<PanelLink href="/admin/progress">View all</PanelLink>}
+                    action={null}
                 >
                     {recentSubmissions.length === 0 ? (
                         <EmptyState icon={<ClipboardList size={28} />} text="No submissions yet." />
@@ -124,13 +133,11 @@ export default function AdminDashboard({ stats = {}, recentFamilies = [], recent
                                 <div className="text-[13px] font-semibold text-stone-900">{s.child?.name ?? '—'}</div>
                                 <div className="text-[11px] text-stone-400">{s.activity?.title ?? '—'}</div>
                             </div>
-                            <div className="text-right">
-                                <div
-                                    className="text-[14px] font-bold text-amber-500"
-                                    style={{ fontFamily: "'JetBrains Mono', monospace" }}
-                                >
-                                    {s.score}/{s.activity?.max_score ?? '?'}
-                                </div>
+                            <div
+                                className="text-[14px] font-bold text-amber-500"
+                                style={{ fontFamily: "'JetBrains Mono', monospace" }}
+                            >
+                                {s.score}/{s.activity?.max_score ?? '?'}
                             </div>
                         </div>
                     ))}
@@ -145,7 +152,6 @@ export default function AdminDashboard({ stats = {}, recentFamilies = [], recent
    SHARED EXPORTS — imported by every other admin page
    ═══════════════════════════════════════════════════════════════════════════ */
 
-/** Flash success / error banner */
 export function FlashMessage({ flash }) {
     if (!flash?.success && !flash?.error) return null;
     const ok = !!flash.success;
@@ -160,7 +166,6 @@ export function FlashMessage({ flash }) {
     );
 }
 
-/** Page eyebrow + H1 */
 export function PageEyebrow({ label, title, desc }) {
     return (
         <div className="mb-6">
@@ -178,26 +183,19 @@ export function PageEyebrow({ label, title, desc }) {
                 {title}
             </h1>
             {desc && (
-                <p className="text-[13px] mt-1 leading-relaxed text-stone-400">
-                    {desc}
-                </p>
+                <p className="text-[13px] mt-1 leading-relaxed text-stone-400">{desc}</p>
             )}
         </div>
     );
 }
 
-/** White card panel with header */
 export function Panel({ title, icon, action, children }) {
     return (
         <div className="rounded-[14px] border border-stone-200 bg-white overflow-hidden">
             <div className="flex items-center justify-between px-4 md:px-5 py-3 border-b border-stone-100">
                 <div className="flex items-center gap-1.5">
                     {icon}
-                    <span
-                        className="text-[12px] font-bold tracking-[0.02em] text-stone-900"
-                    >
-                        {title}
-                    </span>
+                    <span className="text-[12px] font-bold tracking-[0.02em] text-stone-900">{title}</span>
                 </div>
                 {action}
             </div>
@@ -206,32 +204,23 @@ export function Panel({ title, icon, action, children }) {
     );
 }
 
-/** "View all →" link used in panel headers */
 function PanelLink({ href, children }) {
     return (
-        <Link
-            href={href}
-            className="inline-flex items-center gap-0.5 text-[11px] font-medium no-underline transition-opacity hover:opacity-70 text-amber-500"
-        >
+        <Link href={href} className="inline-flex items-center gap-0.5 text-[11px] font-medium no-underline transition-opacity hover:opacity-70 text-amber-500">
             {children}
             <ChevronRight size={12} />
         </Link>
     );
 }
 
-/** Section label (mono uppercase) */
 export function SectionLabel({ children }) {
     return (
-        <div
-            className="text-[9px] tracking-[0.2em] uppercase text-stone-400"
-            style={{ fontFamily: "'JetBrains Mono', monospace" }}
-        >
+        <div className="text-[9px] tracking-[0.2em] uppercase text-stone-400" style={{ fontFamily: "'JetBrains Mono', monospace" }}>
             {children}
         </div>
     );
 }
 
-/** Empty state placeholder */
 export function EmptyState({ icon, text }) {
     return (
         <div className="flex flex-col items-center py-10 gap-3 text-stone-400">
@@ -241,7 +230,6 @@ export function EmptyState({ icon, text }) {
     );
 }
 
-/** Table thead */
 export function TableHeader({ columns }) {
     return (
         <thead>
@@ -260,7 +248,6 @@ export function TableHeader({ columns }) {
     );
 }
 
-/** Table td */
 export function TableCell({ children, mono = false, muted = false }) {
     return (
         <td
@@ -275,7 +262,6 @@ export function TableCell({ children, mono = false, muted = false }) {
     );
 }
 
-/** Laravel paginator links */
 export function Pagination({ links = [] }) {
     if (links.length <= 3) return null;
     return (
@@ -300,20 +286,13 @@ export function Pagination({ links = [] }) {
     );
 }
 
-/** Form field group with label + optional error/helper */
 export function FormGroup({ label, error, children, helper }) {
     return (
         <div className="mb-[18px]">
-            <label className="block text-[11px] font-semibold mb-1.5 tracking-[0.04em] text-stone-400">
-                {label}
-            </label>
+            <label className="block text-[11px] font-semibold mb-1.5 tracking-[0.04em] text-stone-400">{label}</label>
             {children}
-            {error && (
-                <p className="text-[11px] mt-1 text-rose-500">{error}</p>
-            )}
-            {!error && helper && (
-                <p className="text-[11px] mt-1 text-stone-400">{helper}</p>
-            )}
+            {error  && <p className="text-[11px] mt-1 text-rose-500">{error}</p>}
+            {!error && helper && <p className="text-[11px] mt-1 text-stone-400">{helper}</p>}
         </div>
     );
 }

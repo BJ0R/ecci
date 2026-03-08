@@ -1,5 +1,5 @@
 <?php
-// bootstrap/app.php — ECCII custom version
+// bootstrap/app.php
 
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
@@ -12,32 +12,17 @@ return Application::configure(basePath: dirname(__DIR__))
         health: '/up',
     )
     ->withMiddleware(function (Middleware $middleware) {
-        $middleware->encryptCookies(except: ['appearance', 'sidebar_state']);
-
-        // ── Inertia shared data middleware ────────────────────────────────────
+        // ── Inertia SSR / Vite HMR ────────────────────────────────────────
         $middleware->web(append: [
             \App\Http\Middleware\HandleInertiaRequests::class,
             \Illuminate\Http\Middleware\AddLinkHeadersForPreloadedAssets::class,
         ]);
 
-        // ── Override authenticated-user redirect ──────────────────────────────
-        // Breeze's default redirects to route('dashboard') which doesn't exist.
-        // This tells the built-in RedirectIfAuthenticated middleware where to
-        // send logged-in users who visit guest-only pages (login, register, etc.)
-        $middleware->redirectUsersTo(function ($request) {
-            $user = $request->user();
-            if (! $user)                return route('login');
-            if ($user->role === 'admin') return route('admin.dashboard');
-            if (! $user->is_approved)   return route('approval.pending');
-            return route('parent.dashboard');
-        });
-
-        // ── Custom middleware aliases ─────────────────────────────────────────
-        // Used in web.php: ->middleware(['auth', 'is.admin']) etc.
+        // ── Custom role-gate aliases ──────────────────────────────────────
         $middleware->alias([
-            'is.admin'      => \App\Http\Middleware\IsAdmin::class,
-            'is.parent'     => \App\Http\Middleware\IsParent::class,
-            'owns.profile'  => \App\Http\Middleware\OwnsFamilyProfile::class,
+            'is.admin'   => \App\Http\Middleware\IsAdmin::class,
+            'is.teacher' => \App\Http\Middleware\IsTeacher::class,
+            'is.parent'  => \App\Http\Middleware\IsParent::class,
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions) {

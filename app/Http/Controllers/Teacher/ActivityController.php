@@ -1,7 +1,7 @@
 <?php
-// app/Http/Controllers/Admin/ActivityController.php
+// app/Http/Controllers/Teacher/ActivityController.php
 
-namespace App\Http\Controllers\Admin;
+namespace App\Http\Controllers\Teacher;   // ← FIXED (was Admin)
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreActivityRequest;
@@ -18,27 +18,25 @@ class ActivityController extends Controller
             ->latest()
             ->paginate(15);
 
-        return Inertia::render('Admin/Activities/Index', [
+        return Inertia::render('Teacher/Activities/Index', [ // ← FIXED path
             'activities' => $activities,
         ]);
     }
 
     public function create()
     {
-        // Include ALL lessons (draft + published) so admin can pre-link activities
+        // Include ALL lessons (draft + published) so teacher can pre-link activities
         $lessons = Lesson::orderBy('week_number')
             ->select('id', 'title', 'series', 'week_number', 'is_published')
             ->get();
 
-        return Inertia::render('Admin/Activities/Create', [
+        return Inertia::render('Teacher/Activities/Create', [ // ← FIXED path
             'lessons' => $lessons,
         ]);
     }
 
     public function store(StoreActivityRequest $request)
     {
-        // For quiz: auto-compute max_score from the sum of question points
-        // For fill: use the admin-entered max_score (default 10)
         $maxScore = (int) ($request->max_score ?? 10);
 
         if ($request->type === 'quiz' && $request->filled('questions')) {
@@ -47,17 +45,15 @@ class ActivityController extends Controller
         }
 
         $activity = Activity::create([
-            'lesson_id'    => $request->lesson_id ?: null,  // empty string → null
+            'lesson_id'    => $request->lesson_id ?: null,
             'title'        => $request->title,
-            'type'         => $request->type,               // quiz | fill  (drawing removed)
+            'type'         => $request->type,
             'instructions' => $request->instructions,
             'max_score'    => $maxScore,
         ]);
 
-        // Persist questions for quiz type only
         if ($request->type === 'quiz' && $request->filled('questions')) {
             foreach ($request->questions as $q) {
-                // Strip blank choices before saving
                 $choices = array_values(
                     array_filter($q['choices'] ?? [], fn ($c) => trim((string) $c) !== '')
                 );
@@ -71,12 +67,8 @@ class ActivityController extends Controller
             }
         }
 
-        // Fill activities: no questions — only instructions + manual review
-        // The parent reads the text, child answers verbally or in writing,
-        // parent types the answer into the textarea and submits.
-
         return redirect()
-            ->route('admin.activities.index')
+            ->route('teacher.activities.index')
             ->with('success', "Activity \"{$activity->title}\" created successfully.");
     }
 

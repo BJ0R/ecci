@@ -1,47 +1,27 @@
-// resources/js/Components/Layout/AdminLayout.jsx
-// UPDATED: Removed Lessons, Activities, Memory Verses, Progress → now Teacher-only.
-//          Content group removed entirely. People group kept.
+// resources/js/Components/Layout/TeacherLayout.jsx
 import { Link, usePage } from '@inertiajs/react';
 import { useState } from 'react';
 import {
-    LayoutDashboard, Megaphone, Users2,
-    MessageSquareHeart, Settings, LogOut,
-    Menu, X, ShieldCheck,
+    LayoutDashboard, BookOpen, BrainCircuit,
+    BookMarked, TrendingUp, LogOut, Menu, X, ChevronRight,
 } from 'lucide-react';
 
-export default function AdminLayout({ children }) {
+const NAV = [
+    { href: '/teacher/dashboard',  label: 'Dashboard',     icon: LayoutDashboard },
+    { href: '/teacher/lessons',    label: 'Lessons',       icon: BookOpen        },
+    { href: '/teacher/activities', label: 'Activities',    icon: BrainCircuit    },
+    { href: '/teacher/verses',     label: 'Memory Verses', icon: BookMarked      },
+    { href: '/teacher/progress',   label: 'Progress',      icon: TrendingUp      },
+];
+
+export default function TeacherLayout({ title, children }) {
     const { auth } = usePage().props;
-    const user = auth?.user;
     const [mobileOpen, setMobileOpen] = useState(false);
 
-    const currentPath = typeof window !== 'undefined' ? window.location.pathname : '';
+    const path = typeof window !== 'undefined' ? window.location.pathname : '';
 
-    const isActive = (href) => {
-        if (href === '/admin' || href === '/admin/dashboard')
-            return currentPath === '/admin' || currentPath === '/admin/dashboard';
-        return currentPath.startsWith(href);
-    };
-
-    // ── Admin-only nav ─────────────────────────────────────────────────────────
-    // Lessons / Activities / Verses / Progress belong to the Teacher portal.
-    const navGroups = [
-        {
-            label: 'Admin',
-            items: [
-                { href: '/admin/dashboard',    icon: LayoutDashboard,    label: 'Dashboard'      },
-                { href: '/admin/announcements', icon: Megaphone,          label: 'Announcements'  },
-            ],
-        },
-        {
-            label: 'People',
-            items: [
-                { href: '/admin/users',  icon: Users2,             label: 'Users & Families'  },
-                { href: '/admin/prayer', icon: MessageSquareHeart, label: 'Prayer Requests'   },
-            ],
-        },
-    ];
-
-    const initials = (user?.name || 'A').charAt(0).toUpperCase();
+    const user     = auth?.user;
+    const initials = (user?.name ?? 'T').charAt(0).toUpperCase();
 
     return (
         <div className="flex min-h-screen" style={{ fontFamily: "'Outfit', sans-serif", backgroundColor: '#eef2fc' }}>
@@ -55,7 +35,7 @@ export default function AdminLayout({ children }) {
                 />
             )}
 
-            {/* ── Sidebar ── */}
+            {/* ── Sidebar ─────────────────────────────────────────────────── */}
             <aside
                 style={{
                     background: 'linear-gradient(175deg, #101e5a 0%, #0a1540 55%, #080f30 100%)',
@@ -90,7 +70,7 @@ export default function AdminLayout({ children }) {
                     >
                         <img
                             src="/ECCSII.jpg"
-                            alt="ECCSII Logo"
+                            alt="ECCII Logo"
                             className="w-full h-full object-cover"
                         />
                     </div>
@@ -102,46 +82,61 @@ export default function AdminLayout({ children }) {
                         ECC<em className="not-italic" style={{ color: '#e8a020' }}>II</em>
                     </div>
 
-                    <div className="mt-2">
-                        <span
-                            className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[9px] font-bold tracking-widest uppercase"
-                            style={{ background: '#c0201e', color: '#fff' }}
-                        >
-                            <ShieldCheck size={9} />
-                            Admin
-                        </span>
+                    <div
+                        className="mt-0.5 text-[10px] tracking-wide text-center"
+                        style={{ color: 'rgba(255,255,255,0.30)', fontFamily: "'JetBrains Mono', monospace" }}
+                    >
+                        Teacher Portal
                     </div>
                 </div>
 
-                {/* Nav groups */}
+                {/* ── Nav ── */}
                 <div className="flex-1 overflow-y-auto">
-                    {navGroups.map(group => (
-                        <div key={group.label}>
-                            <SidebarLabel>{group.label}</SidebarLabel>
-                            {group.items.map(item => (
-                                <SidebarLink
-                                    key={item.href}
-                                    href={item.href}
-                                    icon={item.icon}
-                                    active={isActive(item.href)}
-                                >
-                                    {item.label}
-                                </SidebarLink>
-                            ))}
-                        </div>
-                    ))}
+                    <SidebarLabel>Manage</SidebarLabel>
+                    {NAV.map(({ href, label, icon: Icon }) => {
+                        const active = path === href || (href !== '/teacher/dashboard' && path.startsWith(href));
+                        return (
+                            <SidebarLink key={href} href={href} icon={Icon} active={active}>
+                                {label}
+                            </SidebarLink>
+                        );
+                    })}
                 </div>
 
-                {/* Account */}
+                {/* ── User footer ── */}
                 <div style={{ borderTop: '1px solid rgba(255,255,255,0.07)' }}>
                     <SidebarLabel>Account</SidebarLabel>
-                    <SidebarLink href="/profile" icon={Settings} active={currentPath.startsWith('/profile')}>
-                        Settings
-                    </SidebarLink>
+
+                    {/* Name pill */}
+                    <div className="flex items-center gap-2.5 px-[22px] py-[9px]">
+                        <div
+                            className="w-7 h-7 rounded-full flex items-center justify-center text-[11px] font-bold flex-shrink-0"
+                            style={{ background: '#e8a020', color: '#0d1f5c' }}
+                        >
+                            {initials}
+                        </div>
+                        <div className="min-w-0">
+                            <div
+                                className="text-[12px] font-semibold truncate"
+                                style={{ color: 'rgba(255,255,255,0.85)' }}
+                            >
+                                {user?.name ?? 'Teacher'}
+                            </div>
+                            <div
+                                className="text-[9px]"
+                                style={{ fontFamily: "'JetBrains Mono', monospace", color: 'rgba(255,255,255,0.30)' }}
+                            >
+                                teacher
+                            </div>
+                        </div>
+                    </div>
+
                     <Link
-                        href="/logout" method="post" as="button"
-                        className="flex items-center gap-2.5 w-full px-[22px] py-[9px] mb-5 text-[13px] border-l-2 border-transparent text-left"
-                        style={{ fontFamily: "'Outfit', sans-serif", color: 'rgba(255,255,255,0.32)' }}
+                        href="/logout"
+                        method="post"
+                        as="button"
+                        className="flex items-center gap-2.5 w-full px-[22px] py-[9px] text-[13px] border-l-2 border-transparent text-left mb-3"
+                        style={{ fontFamily: "'Outfit', sans-serif", color: 'rgba(255,255,255,0.32)', background: 'none' }}
                     >
                         <LogOut size={15} style={{ opacity: 0.6 }} />
                         Sign Out
@@ -149,7 +144,7 @@ export default function AdminLayout({ children }) {
                 </div>
             </aside>
 
-            {/* ── Main area ── */}
+            {/* ── Main area ───────────────────────────────────────────────── */}
             <div className="md:ml-[230px] flex-1 flex flex-col min-h-screen min-w-0">
 
                 {/* Topbar */}
@@ -162,6 +157,7 @@ export default function AdminLayout({ children }) {
                         boxShadow: '0 1px 10px rgba(13,31,92,0.07)',
                     }}
                 >
+                    {/* Mobile hamburger */}
                     <button
                         onClick={() => setMobileOpen(o => !o)}
                         className="p-2 rounded-lg mr-3 md:hidden"
@@ -170,15 +166,36 @@ export default function AdminLayout({ children }) {
                         <Menu size={20} />
                     </button>
 
+                    {/* Breadcrumb */}
+                    {title && (
+                        <div
+                            className="hidden md:flex items-center gap-1.5 text-[11px]"
+                            style={{ fontFamily: "'JetBrains Mono', monospace", color: 'rgba(13,31,92,0.35)' }}
+                        >
+                            Teacher Portal
+                            <ChevronRight size={11} />
+                            <span style={{ color: '#0d1f5c', fontWeight: 600 }}>{title}</span>
+                        </div>
+                    )}
+
                     <div className="flex-1" />
+
+                    {/* Greeting */}
+                    <span
+                        className="hidden md:inline text-sm mr-4"
+                        style={{ color: 'rgba(13,31,92,0.45)', fontFamily: "'Outfit', sans-serif" }}
+                    >
+                        Welcome, {user?.name ?? 'Teacher'}
+                    </span>
 
                     {/* User pill */}
                     <div
                         className="flex items-center gap-2 pl-1.5 pr-4 rounded-full text-xs font-medium"
                         style={{
-                            background: 'linear-gradient(135deg, #101e5a, #1a3380)',
-                            color: '#f5f0e8',
-                            boxShadow: '0 2px 10px rgba(13,31,92,0.28)',
+                            background: '#fff',
+                            border: '1px solid rgba(13,31,92,0.12)',
+                            color: '#0d1f5c',
+                            boxShadow: '0 1px 6px rgba(13,31,92,0.10)',
                         }}
                     >
                         <div
@@ -187,10 +204,11 @@ export default function AdminLayout({ children }) {
                         >
                             {initials}
                         </div>
-                        <span className="hidden sm:inline">{user?.name || 'Admin'}</span>
+                        <span className="hidden sm:inline">{user?.name ?? 'Teacher'}</span>
                     </div>
                 </header>
 
+                {/* Page content */}
                 <main className="flex-1 p-4 md:p-7" style={{ backgroundColor: '#eef2fc' }}>
                     {children}
                 </main>
@@ -210,13 +228,13 @@ function SidebarLabel({ children }) {
     );
 }
 
-function SidebarLink({ href, icon: Icon, active, children }) {
+function SidebarLink({ href, icon: Icon, children, active }) {
     return (
         <Link
             href={href}
-            className="flex items-center gap-2.5 px-[22px] py-[9px] text-[13px] my-px border-l-2 transition-all duration-150 no-underline"
+            className="flex items-center gap-2.5 px-[22px] py-[9px] text-[13px] my-px border-l-2 transition-all duration-150 no-underline w-full"
             style={{
-                fontFamily:      "'Outfit', sans-serif",
+                fontFamily: "'Outfit', sans-serif",
                 borderLeftColor: active ? '#e8a020' : 'transparent',
                 background:      active ? 'rgba(232,160,32,0.09)' : 'transparent',
                 color:           active ? '#e8c060' : 'rgba(255,255,255,0.50)',

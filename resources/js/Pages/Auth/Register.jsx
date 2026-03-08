@@ -24,7 +24,6 @@ const css = `
   50%       { opacity: 1; }
 }
 
-/* ── Panel ── */
 .eccii-reg-panel {
   animation: slideInLeft 0.75s cubic-bezier(0.22,1,0.36,1) both;
   position: relative; overflow: hidden;
@@ -45,12 +44,8 @@ const css = `
   background: radial-gradient(circle, rgba(255,255,255,0.03) 0%, transparent 65%);
   pointer-events: none;
 }
+.eccii-reg-wrap { animation: fadeUp 0.65s cubic-bezier(0.22,1,0.36,1) 0.1s both; }
 
-.eccii-reg-wrap {
-  animation: fadeUp 0.65s cubic-bezier(0.22,1,0.36,1) 0.1s both;
-}
-
-/* ── Staggered fields ── */
 .eccii-reg-field { animation: fadeUp 0.5s cubic-bezier(0.22,1,0.36,1) both; }
 .eccii-reg-field:nth-child(1) { animation-delay: 0.20s; }
 .eccii-reg-field:nth-child(2) { animation-delay: 0.27s; }
@@ -60,16 +55,12 @@ const css = `
 .eccii-reg-field:nth-child(6) { animation-delay: 0.50s; }
 .eccii-reg-field:nth-child(7) { animation-delay: 0.55s; }
 
-/* ── Step items ── */
-.eccii-step {
-  animation: stepReveal 0.5s cubic-bezier(0.22,1,0.36,1) both;
-}
+.eccii-step { animation: stepReveal 0.5s cubic-bezier(0.22,1,0.36,1) both; }
 .eccii-step:nth-child(1) { animation-delay: 0.55s; }
 .eccii-step:nth-child(2) { animation-delay: 0.65s; }
 .eccii-step:nth-child(3) { animation-delay: 0.75s; }
 .eccii-step:nth-child(4) { animation-delay: 0.85s; }
 
-/* ── Logo ── */
 .eccii-logo-ring {
   transition: transform 0.4s cubic-bezier(0.34,1.56,0.64,1), box-shadow 0.3s ease;
   cursor: default;
@@ -79,7 +70,6 @@ const css = `
   box-shadow: 0 0 0 5px rgba(232,160,32,0.25);
 }
 
-/* ── Input ── */
 .eccii-input {
   transition: border-color 0.18s ease, box-shadow 0.18s ease, background 0.18s ease;
   outline: none;
@@ -89,7 +79,6 @@ const css = `
   box-shadow: 0 0 0 3px rgba(232,160,32,0.2) !important;
 }
 
-/* ── Button ── */
 .eccii-btn {
   position: relative; overflow: hidden;
   transition: transform 0.16s ease, box-shadow 0.18s ease;
@@ -110,10 +99,7 @@ const css = `
 }
 .eccii-btn:active:not(:disabled) { transform: translateY(0); box-shadow: none; }
 
-/* ── Gold link ── */
-.eccii-gold-link {
-  position: relative; transition: color 0.15s;
-}
+.eccii-gold-link { position: relative; transition: color 0.15s; }
 .eccii-gold-link::after {
   content: '';
   position: absolute; bottom: -1px; left: 0; right: 0; height: 1px;
@@ -122,47 +108,52 @@ const css = `
 }
 .eccii-gold-link:hover::after { transform: scaleX(1); }
 
-/* ── Gold bar ── */
+/* Role toggle pills */
+.eccii-role-btn {
+  flex: 1; padding: 10px 12px;
+  border-radius: 8px; border: 1.5px solid var(--border);
+  font-family: 'Outfit', sans-serif; font-size: 13px; font-weight: 600;
+  cursor: pointer; transition: all 0.18s ease;
+  display: flex; flex-direction: column; align-items: center; gap: 4px;
+  background: var(--white);
+}
+.eccii-role-btn.active-parent {
+  border-color: #101e5a; background: rgba(16,30,90,0.06); color: #101e5a;
+}
+.eccii-role-btn.active-teacher {
+  border-color: #e8a020; background: rgba(232,160,32,0.10); color: #92400E;
+}
+.eccii-role-btn:not(.active-parent):not(.active-teacher) { color: var(--ink-50); }
+
+/* Layout */
+:root {
+  --ink: #0d1f5c; --ink-50: rgba(13,31,92,0.5); --cream: #faf7f2;
+  --gold: #e8a020; --gold-lt: rgba(232,160,32,0.7);
+  --border: rgba(13,31,92,0.15); --white: #fff; --rose: #e11d48;
+}
+.eccii-outer {
+  min-height: 100vh; display: flex; align-items: stretch;
+  background: linear-gradient(135deg, #f0f4ff 0%, #faf7f0 100%);
+  font-family: 'Outfit', sans-serif;
+}
+.eccii-form-area {
+  flex: 1; display: flex; align-items: center; justify-content: center;
+  padding: 48px 40px;
+  overflow-y: auto;
+}
 .eccii-gold-bar {
-  width: 32px; height: 2px;
-  background: linear-gradient(90deg, var(--gold), var(--gold-lt));
-  margin-bottom: 20px; border-radius: 2px;
-  animation: glowPulse 2.5s ease-in-out 1s infinite;
+  width: 32px; height: 2px; border-radius: 99px;
+  background: var(--gold); margin-bottom: 14px;
 }
 
-/* ── Responsive root ── */
-.eccii-auth-root {
-  min-height: 100svh; display: flex;
-  font-family: 'Outfit', sans-serif; background: var(--cream);
+@media (max-width: 860px) {
+  .eccii-reg-panel { display: none !important; }
+  .eccii-form-area { padding: 32px 20px; }
 }
-.eccii-mobile-bar {
-  display: none; background: var(--ink); padding: 12px 18px;
-  align-items: center; justify-content: space-between; flex-shrink: 0;
-}
-
-@media (max-width: 1023px) {
-  .eccii-auth-root   { flex-direction: column; }
-  .eccii-mobile-bar  { display: flex; }
-  .eccii-reg-panel   { display: none !important; }
-  .eccii-form-area {
-    flex: 1; display: flex; align-items: center; justify-content: center;
-    padding: clamp(16px, 5vw, 36px); overflow-y: auto;
-  }
-}
-@media (min-width: 1024px) {
-  .eccii-form-area {
-    flex: 1; display: flex; align-items: center; justify-content: center;
-    padding: 40px; overflow-y: auto;
-  }
-}
-
-/* ── Compact on very short screens ── */
 @media (max-height: 700px) {
   .eccii-reg-gap   { gap: 10px !important; }
   .eccii-reg-hdr   { margin-bottom: 14px !important; }
 }
-
-/* ── Password grid: stack on tiny screens ── */
 @media (max-width: 420px) {
   .eccii-pw-grid { grid-template-columns: 1fr !important; }
 }
@@ -175,7 +166,10 @@ export default function Register() {
         email:                 '',
         password:              '',
         password_confirmation: '',
+        role:                  'parent',   // ← new field
     });
+
+    const isTeacher = data.role === 'teacher';
 
     const inputStyle = (hasErr) => ({
         width: '100%', padding: '10px 14px', boxSizing: 'border-box',
@@ -196,22 +190,29 @@ export default function Register() {
         post(route('register'), { onFinish: () => reset('password', 'password_confirmation') });
     }
 
-    const steps = [
+    // Steps change based on role
+    const parentSteps = [
         ['01', 'Register your family account'],
         ['02', 'Admin approves your account'],
         ['03', 'Add your children as profiles'],
         ['04', 'Start guided Bible lessons together'],
     ];
+    const teacherSteps = [
+        ['01', 'Register as a teacher'],
+        ['02', 'Admin approves your account'],
+        ['03', 'Create lessons & activities'],
+        ['04', 'Track children\'s progress'],
+    ];
+    const steps = isTeacher ? teacherSteps : parentSteps;
 
     return (
         <>
             <Head title="Register — ECCII Home Learning" />
             <style dangerouslySetInnerHTML={{ __html: css }} />
 
-            <div className="eccii-auth-root">
+            <div className="eccii-outer">
 
-
-                {/* ── Brand panel (desktop) ─────────────────── */}
+                {/* ── Left panel (info) ── */}
                 <div
                     className="eccii-reg-panel"
                     style={{
@@ -238,19 +239,17 @@ export default function Register() {
                         </div>
                     </div>
 
-                    {/* Steps */}
                     <div>
                         <div className="eccii-gold-bar" />
                         <p style={{ fontSize: '10px', fontFamily: "'JetBrains Mono', monospace", letterSpacing: '0.18em', textTransform: 'uppercase', color: 'var(--gold-lt)', marginBottom: '20px' }}>
-                            How it works
+                            {isTeacher ? 'Teacher journey' : 'How it works'}
                         </p>
                         {steps.map(([num, text]) => (
                             <div key={num} className="eccii-step" style={{ display: 'flex', alignItems: 'flex-start', gap: '12px', marginBottom: '14px' }}>
                                 <span style={{
                                     fontFamily: "'JetBrains Mono', monospace",
                                     fontSize: '10px', color: 'var(--gold)', fontWeight: 700,
-                                    flexShrink: 0, marginTop: '2px',
-                                    minWidth: '20px',
+                                    flexShrink: 0, marginTop: '2px', minWidth: '20px',
                                 }}>{num}</span>
                                 <span style={{ fontSize: '13px', color: 'rgba(250,247,242,0.65)', lineHeight: 1.55 }}>
                                     {text}
@@ -264,11 +263,11 @@ export default function Register() {
                     </div>
                 </div>
 
-                {/* ── Form area ────────────────────────────── */}
+                {/* ── Form area ── */}
                 <div className="eccii-form-area">
                     <div className="eccii-reg-wrap" style={{ width: '100%', maxWidth: '420px' }}>
 
-                        {/* Header */}
+                        {/* Header — changes with role */}
                         <div className="eccii-reg-hdr" style={{ marginBottom: '24px' }}>
                             <h1 style={{
                                 fontFamily: "'Cormorant Garamond', serif",
@@ -276,22 +275,54 @@ export default function Register() {
                                 color: 'var(--ink)', lineHeight: 1.1,
                                 letterSpacing: '-0.01em', marginBottom: '7px',
                             }}>
-                                Create family account
+                                {isTeacher ? 'Create teacher account' : 'Create family account'}
                             </h1>
                             <p style={{ fontSize: '14px', color: 'var(--ink-50)', lineHeight: 1.5 }}>
-                                One account for your whole family. Add each child as a profile after registering.
+                                {isTeacher
+                                    ? 'Teacher accounts are approved by the church admin before activation.'
+                                    : 'One account for your whole family. Add each child as a profile after registering.'
+                                }
                             </p>
                         </div>
 
                         <form onSubmit={submit} className="eccii-reg-gap" style={{ display: 'flex', flexDirection: 'column', gap: '14px' }}>
 
-                            {/* Parent name */}
+                            {/* ── Role selector ── */}
                             <div className="eccii-reg-field">
-                                <label style={labelStyle}>Your Name (Parent / Guardian)</label>
+                                <label style={labelStyle}>I am registering as</label>
+                                <div style={{ display: 'flex', gap: '10px' }}>
+                                    <button
+                                        type="button"
+                                        onClick={() => setData('role', 'parent')}
+                                        className={`eccii-role-btn ${data.role === 'parent' ? 'active-parent' : ''}`}
+                                    >
+                                        <span style={{ fontSize: '20px' }}>👨‍👩‍👧</span>
+                                        <span>Parent / Family</span>
+                                        <span style={{ fontSize: '10px', fontWeight: 400, opacity: 0.65 }}>Manages children's learning</span>
+                                    </button>
+                                    <button
+                                        type="button"
+                                        onClick={() => setData('role', 'teacher')}
+                                        className={`eccii-role-btn ${data.role === 'teacher' ? 'active-teacher' : ''}`}
+                                    >
+                                        <span style={{ fontSize: '20px' }}>📖</span>
+                                        <span>Teacher</span>
+                                        <span style={{ fontSize: '10px', fontWeight: 400, opacity: 0.65 }}>Creates lessons & activities</span>
+                                    </button>
+                                </div>
+                                {errors.role && <p style={{ marginTop: '4px', fontSize: '12px', color: 'var(--rose)' }}>{errors.role}</p>}
+                            </div>
+
+                            {/* Name */}
+                            <div className="eccii-reg-field">
+                                <label style={labelStyle}>
+                                    {isTeacher ? 'Your Name' : 'Your Name (Parent / Guardian)'}
+                                </label>
                                 <input
                                     type="text" value={data.name} required
                                     onChange={e => setData('name', e.target.value)}
-                                    autoComplete="name" placeholder="e.g. Maria Santos"
+                                    autoComplete="name"
+                                    placeholder={isTeacher ? 'e.g. Maria Santos' : 'e.g. Maria Santos'}
                                     className="eccii-input" style={inputStyle(errors.name)}
                                     onFocus={e => e.target.style.borderColor = 'var(--gold)'}
                                     onBlur={e => e.target.style.borderColor = errors.name ? 'var(--rose)' : 'var(--border)'}
@@ -299,27 +330,29 @@ export default function Register() {
                                 {errors.name && <p style={{ marginTop: '4px', fontSize: '12px', color: 'var(--rose)' }}>{errors.name}</p>}
                             </div>
 
-                            {/* Family name */}
-                            <div className="eccii-reg-field">
-                                <label style={{ ...labelStyle, display: 'flex', alignItems: 'center', gap: '8px' }}>
-                                    Family Name
-                                    <span style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: '9px', letterSpacing: '0.1em', background: '#FDF2F2', color: '#B45309', padding: '1px 6px', borderRadius: '4px', border: '1px solid #FDE68A', textTransform: 'uppercase', fontWeight: 700 }}>
-                                        ECCII
-                                    </span>
-                                </label>
-                                <input
-                                    type="text" value={data.family_name}
-                                    onChange={e => setData('family_name', e.target.value)}
-                                    placeholder="e.g. Santos Family"
-                                    className="eccii-input" style={inputStyle(errors.family_name)}
-                                    onFocus={e => e.target.style.borderColor = 'var(--gold)'}
-                                    onBlur={e => e.target.style.borderColor = errors.family_name ? 'var(--rose)' : 'var(--border)'}
-                                />
-                                <p style={{ fontSize: '11px', color: 'var(--ink-50)', marginTop: '4px' }}>
-                                    Shown in the sidebar and on the admin dashboard.
-                                </p>
-                                {errors.family_name && <p style={{ marginTop: '2px', fontSize: '12px', color: 'var(--rose)' }}>{errors.family_name}</p>}
-                            </div>
+                            {/* Family name — parents only */}
+                            {!isTeacher && (
+                                <div className="eccii-reg-field">
+                                    <label style={{ ...labelStyle, display: 'flex', alignItems: 'center', gap: '8px' }}>
+                                        Family Name
+                                        <span style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: '9px', letterSpacing: '0.1em', background: '#FDF2F2', color: '#B45309', padding: '1px 6px', borderRadius: '4px', border: '1px solid #FDE68A', textTransform: 'uppercase', fontWeight: 700 }}>
+                                            ECCII
+                                        </span>
+                                    </label>
+                                    <input
+                                        type="text" value={data.family_name}
+                                        onChange={e => setData('family_name', e.target.value)}
+                                        placeholder="e.g. Santos Family"
+                                        className="eccii-input" style={inputStyle(errors.family_name)}
+                                        onFocus={e => e.target.style.borderColor = 'var(--gold)'}
+                                        onBlur={e => e.target.style.borderColor = errors.family_name ? 'var(--rose)' : 'var(--border)'}
+                                    />
+                                    <p style={{ fontSize: '11px', color: 'var(--ink-50)', marginTop: '4px' }}>
+                                        Shown in the sidebar and on the admin dashboard.
+                                    </p>
+                                    {errors.family_name && <p style={{ marginTop: '2px', fontSize: '12px', color: 'var(--rose)' }}>{errors.family_name}</p>}
+                                </div>
+                            )}
 
                             {/* Email */}
                             <div className="eccii-reg-field">
@@ -372,7 +405,13 @@ export default function Register() {
                                 <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#B45309" strokeWidth="2.2" style={{ flexShrink: 0, marginTop: '1px' }}>
                                     <circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/>
                                 </svg>
-                                <span><strong>Approval required.</strong> Your account will be reviewed by the church admin before you can sign in.</span>
+                                <span>
+                                    <strong>Approval required.</strong>{' '}
+                                    {isTeacher
+                                        ? 'Your teacher account will be reviewed by the church admin before you can access the teacher portal.'
+                                        : 'Your account will be reviewed by the church admin before you can sign in.'
+                                    }
+                                </span>
                             </div>
 
                             {/* Submit */}
@@ -397,7 +436,7 @@ export default function Register() {
                                             </svg>
                                             Creating account…
                                         </span>
-                                    ) : 'Create Family Account'}
+                                    ) : (isTeacher ? 'Create Teacher Account' : 'Create Family Account')}
                                 </button>
                             </div>
                         </form>

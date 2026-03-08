@@ -1,5 +1,6 @@
 <?php
 namespace App\Models;
+
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 
@@ -11,10 +12,10 @@ class User extends Authenticatable
         'name', 'email', 'password', 'role', 'family_name', 'is_approved',
     ];
 
-    protected $hidden   = ['password', 'remember_token'];
-    protected $casts    = ['is_approved' => 'boolean', 'email_verified_at' => 'datetime'];
+    protected $hidden = ['password', 'remember_token'];
+    protected $casts  = ['is_approved' => 'boolean', 'email_verified_at' => 'datetime'];
 
-    // ── Relationships ──────────────────
+    // ── Relationships ──────────────────────────────────────────────────────────
     public function childProfiles()
     {
         return $this->hasMany(ChildProfile::class);
@@ -25,7 +26,8 @@ class User extends Authenticatable
         return $this->hasMany(PrayerRequest::class);
     }
 
-    // ── Helpers ────────────────────────
-    public function isAdmin(): bool   { return $this->role === 'admin'; }
-    public function isParent(): bool  { return $this->role === 'parent'; }
+    // ── Role helpers ───────────────────────────────────────────────────────────
+    public function isAdmin(): bool   { return $this->role === 'admin';   }
+    public function isTeacher(): bool { return $this->role === 'teacher'; }
+    public function isParent(): bool  { return $this->role === 'parent';  }
 }
